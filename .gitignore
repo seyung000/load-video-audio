@@ -23,3 +23,9 @@ __pycache__/
 *.swp
 .DS_Store
 Thumbs.db
+
+# File
+*.log
+*.csv
+*.mp4
+*.wav
