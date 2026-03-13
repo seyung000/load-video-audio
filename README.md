@@ -24,6 +24,11 @@
 * 단순 Raw 데이터 검색에서 탈피하여 **Short-term → Long-term → Raw Fallback** 순서로 탐색하는 하이브리드 검색 구조 구현
 * 상위 계층(Summary)에서 문맥을 먼저 파악하고 필요시 하위(Raw) 데이터를 참조하여 검색 속도와 정확도 향상
 
+### ⚠️ 현재 한계점 및 향후 계획 (Limitations & Roadmap)
+
+* **요약 알고리즘 고도화:** 현재 Short-term/Long-term 요약은 단순히 시간 단위로 분할되어 있어 문맥적 정확도가 낮을 수 있습니다. 향후 프레임 간의 의미적 변화를 감지하여 유연하게 압축하는 알고리즘으로 개선할 예정입니다.
+* **의미 기반 요약 전환:** 현재는 밝기나 움직임 등 시각적 특징 위주의 요약을 생성하지만, 추후 LLM/VLM을 결합하여 실제 사건 중심의 의미 기반 요약(Semantic Summarization)을 구현할 계획입니다.
+
 ## Key Implementations
 
 ### 1. Data Ingestion & Processing
