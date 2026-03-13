@@ -1,7 +1,5 @@
 ## 주요 구현 사항 (Key Implementations)
 
-현재까지 진행된 프로젝트의 핵심 기능 및 구조는 다음과 같습니다.
-
 ### 1. 데이터 인제스트 및 처리 (Data Ingestion)
 * **비디오 프로세싱:** 비디오를 10초 단위의 청크(Chunk)로 분할하고, 각 청크당 3프레임씩 샘플링하는 인제스트 파이프라인 구축
 * **임베딩 저장:** CLIP 기반 비주얼 임베딩을 생성하여 `pgvector`에 저장 및 인덱싱
@@ -14,14 +12,19 @@
 * **계층적 요약 (Hierarchical Summarization):** * `make_summary`: 청크와 이벤트를 결합해 Short-term/Long-term 요약 텍스트 생성
     * `build_memory`: 요약된 텍스트를 다시 임베딩하여 계층별 메모리 테이블에 저장
 * **씬 요약(Scene Summary):** 현재 프레임의 밝기 및 움직임 데이터를 기반으로 한 경량 씬 분석 기반 요약 적용
+![video chunk table](data/video_chunk_table.PNG)
+![Scene Summary](data/short_term_summary.PNG)
 
-### 3. 지능형 검색 아키텍처 (Search Strategy)
+
+#### 결과 예시
+![Example result](data/results.PNG) 
+
+
+### 3. 검색 아키텍처 (Search Strategy)
 * 단순 Raw 데이터 검색에서 탈피하여 **Short-term → Long-term → Raw Fallback** 순서로 탐색하는 하이브리드 검색 구조 구현
 * 상위 계층(Summary)에서 문맥을 먼저 파악하고 필요시 하위(Raw) 데이터를 참조하여 검색 속도와 정확도 향상
 
 ## Key Implementations
-
-The project currently features the following core functionalities and architectural components:
 
 ### 1. Data Ingestion & Processing
 * **Video Processing Pipeline:** Established a pipeline to segment videos into 10-second chunks with a 3-frame sampling rate.
@@ -37,6 +40,6 @@ The project currently features the following core functionalities and architectu
     * `build_memory`: Embeds summary texts into dedicated memory tables for semantic retrieval.
 * **Lightweight Scene Summary:** Implemented scene analysis based on frame brightness and motion dynamics for initial context generation.
 
-### 3. Intelligent Search Strategy
+### 3. Search Strategy
 * **Layered Retrieval Logic:** Transitioned from raw-only search to a sophisticated **Short-term → Long-term → Raw Fallback** search flow.
 * This hierarchical approach ensures high-level context understanding while maintaining the ability to access granular raw data when necessary.
