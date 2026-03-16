@@ -12,6 +12,7 @@ from utils.device import get_device
 from utils.vector import normalize, vector_literal
 
 import numpy as np
+from psycopg.types.json import Jsonb
 import torch
 from transformers import AutoProcessor, CLIPTextModelWithProjection
 
@@ -30,7 +31,13 @@ def embed_text(
     model: CLIPTextModelWithProjection,
     device: torch.device,
 ) -> np.ndarray:
-    inputs = processor(text=[text], return_tensors="pt", padding=True).to(device)
+    inputs = processor(
+        text=[text],
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=77,
+    ).to(device)
     with torch.inference_mode():
         embedding = model(**inputs).text_embeds.detach().cpu().numpy()[0]
     return normalize(embedding).astype(np.float32)
@@ -70,7 +77,7 @@ def upsert_short_term_memories(
                         summary["end_sec"],
                         summary["summary_text"],
                         vector_literal(embedding),
-                        summary["metadata"],
+                        Jsonb(summary["metadata"]),
                     ),
                 )
         connection.commit()
@@ -112,7 +119,7 @@ def upsert_long_term_memories(
                         summary["end_sec"],
                         summary["summary_text"],
                         vector_literal(embedding),
-                        summary["metadata"],
+                        Jsonb(summary["metadata"]),
                     ),
                 )
         connection.commit()

@@ -2,8 +2,10 @@ from config.connections import connect_db
 
 
 DEFAULT_VIDEO_ID = 1
-SHORT_TERM_SECONDS = 60
-LONG_TERM_SECONDS = 120
+SHORT_TERM_SECONDS = 10
+LONG_TERM_SECONDS = 50
+MAX_SHORT_SUMMARIES_PER_LONG = 3
+MAX_LONG_SUMMARY_CHARS = 220
 
 
 def load_video_chunks(video_id: int) -> list[dict]:
@@ -158,10 +160,18 @@ def make_short_summary_text(short_term: dict) -> str:
 
 
 def make_long_summary_text(long_term: dict) -> str:
-    short_texts = [short_term["summary_text"] for short_term in long_term["short_terms"] if short_term["summary_text"]]
+    short_texts = [
+        short_term["summary_text"]
+        for short_term in long_term["short_terms"]
+        if short_term["summary_text"]
+    ][:MAX_SHORT_SUMMARIES_PER_LONG]
     if not short_texts:
         return "No significant long-term activity."
-    return " ".join(short_texts)
+
+    summary_text = " ".join(short_texts)
+    if len(summary_text) > MAX_LONG_SUMMARY_CHARS:
+        return summary_text[:MAX_LONG_SUMMARY_CHARS].rstrip() + "..."
+    return summary_text
 
 
 def generate_short_term_summaries(short_terms: list[dict]) -> list[dict]:
